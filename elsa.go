@@ -10,8 +10,10 @@ import (
 
 	"github.com/busgo/elsa/pkg/common"
 	"github.com/busgo/elsa/pkg/log"
+	"github.com/busgo/elsa/plugin"
 	"github.com/busgo/elsa/registry"
 	"github.com/busgo/elsa/registry/transport"
+	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	"google.golang.org/grpc"
 )
 
@@ -46,11 +48,15 @@ type application struct {
 }
 
 func New() Application {
+
 	return &application{
 		name:    "elsa",
 		version: "1.0",
 		port:    8080,
-		srv:     grpc.NewServer(),
+		srv: grpc.NewServer(
+			grpc_middleware.WithStreamServerChain(plugin.RateLimitStreamServerInterceptor()),
+			grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(plugin.RateLimitUnaryServerInterceptor())),
+		),
 	}
 }
 

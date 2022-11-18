@@ -5,6 +5,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/busgo/elsa/limit"
 	"github.com/busgo/elsa/pkg/common"
 	"github.com/busgo/elsa/pkg/log"
 	"github.com/busgo/elsa/pkg/util"
@@ -59,6 +60,15 @@ func (app *application) exportService(export string) error {
 	}
 	u.Host = fmt.Sprintf("%s:%d", util.LocalIp(), app.port)
 	u.Parameters["timestamp"] = strconv.Itoa(int(time.Now().Unix()))
+
+	concurrency, err := strconv.ParseInt(u.Parameter("concurrency", "0"), 10, 64)
+	if err != nil {
+		concurrency = 0
+	}
+
+	if concurrency > 0 {
+		limit.Use(u.Path, limit.New(concurrency))
+	}
 	app.registryService.Register(u)
 
 	log.Infof("the service for %s, export success", u.String())

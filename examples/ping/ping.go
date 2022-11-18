@@ -30,7 +30,7 @@ func (srv *PingService) Build(s *grpc.Server) error {
 }
 
 func (srv *PingService) Export() string {
-	return pb.PingService_ServiceDesc.ServiceName
+	return pb.PingService_ServiceDesc.ServiceName + "?concurrency=10"
 }
 
 type TradeClients struct {
