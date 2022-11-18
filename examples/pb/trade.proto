@@ -1,0 +1,17 @@
+syntax = "proto3";
+package io.busgo.trade;
+option go_package ="./pb";
+
+
+service TradeService {
+    rpc Trade(TradeRequest)returns(TradeResponse);
+}
+
+
+message TradeRequest {
+      int64 user_id =1;
+}
+
+message TradeResponse {
+    int64 order_id =1;
+}
