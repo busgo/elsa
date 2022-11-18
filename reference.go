@@ -42,7 +42,7 @@ func (app *application) exportRef(ref Reference) error {
 		return err
 	}
 	u.Host = fmt.Sprintf("%s:%d", util.LocalIp(), app.port)
-	lb := u.Parameter("lb", app.lb)
+	lb := u.Parameter("balance_policy", app.lb)
 	conn, err := grpc.Dial(
 		u.String(),
 		grpc.WithInsecure(),

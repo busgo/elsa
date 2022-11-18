@@ -22,7 +22,7 @@ type Application interface {
 	Name(string) Application
 	Version(string) Application
 	Port(int32) Application
-	Lb(string) Application
+	BalancePolicy(string) Application
 
 	//  etcd://127.0.0.1:2379?backup=127.0.0.1:2389,127.0.0.1:2382&username=root&password=123456&ttl=10&dial_timeout=5
 	RegistryUrl(string) Application
@@ -79,7 +79,7 @@ func (app *application) Port(port int32) Application {
 	return app
 }
 
-func (app *application) Lb(lb string) Application {
+func (app *application) BalancePolicy(lb string) Application {
 	app.lb = lb
 	return app
 }
