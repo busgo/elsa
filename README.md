@@ -175,7 +175,7 @@ func main() {
 	app, err := elsa.New().
 		Name("ping-clients").
 		BalancePolicy("round_robin").
-		RegistryUrl("etcd://127.0.0.1:2379?dail_timeout=5&session_ttl=5&retry_period=5").
+		RegistryUrl("etcd://127.0.0.1:2379?dail_timeout=5&ttl=5&retry_period=5").
 		Ref(clients).
 		Protocol("grpc").
 		Port(8002).
