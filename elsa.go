@@ -8,6 +8,7 @@ import (
 	"strconv"
 	"strings"
 
+	_ "github.com/busgo/elsa/lb/least"
 	"github.com/busgo/elsa/pkg/common"
 	"github.com/busgo/elsa/pkg/log"
 	"github.com/busgo/elsa/plugin"
@@ -21,6 +22,7 @@ type Application interface {
 	Name(string) Application
 	Version(string) Application
 	Port(int32) Application
+	Lb(string) Application
 
 	//  etcd://127.0.0.1:2379?backup=127.0.0.1:2389,127.0.0.1:2382&username=root&password=123456&ttl=10&dial_timeout=5
 	RegistryUrl(string) Application
@@ -36,6 +38,7 @@ type application struct {
 	name        string
 	version     string
 	port        int32
+	lb          string
 	registryUrl string
 
 	registryService registry.RegistryService
@@ -53,6 +56,7 @@ func New() Application {
 		name:    "elsa",
 		version: "1.0",
 		port:    8080,
+		lb:      "round_robin",
 		srv: grpc.NewServer(
 			grpc_middleware.WithStreamServerChain(plugin.RateLimitStreamServerInterceptor()),
 			grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(plugin.RateLimitUnaryServerInterceptor())),
@@ -72,6 +76,11 @@ func (app *application) Version(version string) Application {
 
 func (app *application) Port(port int32) Application {
 	app.port = port
+	return app
+}
+
+func (app *application) Lb(lb string) Application {
+	app.lb = lb
 	return app
 }
 

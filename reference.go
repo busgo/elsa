@@ -2,9 +2,10 @@ package elsa
 
 import (
 	"fmt"
-	"github.com/busgo/elsa/pkg/util"
 	"strconv"
 	"time"
+
+	"github.com/busgo/elsa/pkg/util"
 
 	"github.com/busgo/elsa/discovery"
 	"github.com/busgo/elsa/pkg/common"
@@ -41,10 +42,12 @@ func (app *application) exportRef(ref Reference) error {
 		return err
 	}
 	u.Host = fmt.Sprintf("%s:%d", util.LocalIp(), app.port)
+	lb := u.Parameter("lb", app.lb)
 	conn, err := grpc.Dial(
 		u.String(),
 		grpc.WithInsecure(),
 		grpc.WithResolvers(discovery.New(u.Protocol, app.registryService)),
+		grpc.WithDefaultServiceConfig(fmt.Sprintf(`{"LoadBalancingPolicy":"%s"}`, lb)),
 	)
 
 	if err != nil {
