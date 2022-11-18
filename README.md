@@ -109,7 +109,7 @@ func main() {
 	app, err := elsa.New().
 		Name("ping-service").
 		RegistryUrl("etcd://127.0.0.1:2379?dail_timeout=5&session_ttl=5&retry_period=5").
-		Service(new(PingService)).
+		Services(new(PingService)).
 		Protocol("grpc").
 		BalancePolicy("round_robin").
 		Port(8001).
@@ -176,7 +176,7 @@ func main() {
 		Name("ping-clients").
 		BalancePolicy("round_robin").
 		RegistryUrl("etcd://127.0.0.1:2379?dail_timeout=5&ttl=5&retry_period=5").
-		Ref(clients).
+		Refs(clients).
 		Protocol("grpc").
 		Port(8002).
 		Export()
